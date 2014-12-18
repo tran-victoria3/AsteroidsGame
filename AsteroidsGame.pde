@@ -1,13 +1,11 @@
 SpaceShip bob = new SpaceShip();
 Star[] susie = new Star[500];
-Asteroid[] rocks = new Asteroid[15];
-
-
-//how to initialize first position of asteroids
+ArrayList <Asteroid> rocksList;
 
 public static final int a_corners = 6;
-int astXcorners[] = { -11,7,13,6,-11,-5,  };
-int astYcorners[] = { -8,-8,0,10,8,0,  };
+int astXcorners[] = { -12,8,12,6,-11,-5,  };
+int astYcorners[] = { -7,-7,0,11,9,0,  };
+public static final int rocksNum = 15;
 
 public void setup() 
 {
@@ -15,19 +13,30 @@ public void setup()
   for (int i = 0; i < susie.length; i++) {
     susie[i] = new Star();
   }
-  for(int x = 0; x < rocks.length; x++){
-     rocks[x] = new Asteroid();
+  rocksList = new ArrayList <Asteroid>();
+  for(int r=0;r< rocksNum ;r++){
+    rocksList.add( new Asteroid() ); 
   }
 }
 public void draw() 
 {
+  
+  for(int r=0;r<rocksList.size();r++){
+    if(rocksList.get(r).distance(bob) < 20){ rocksList.remove(r); }
+  }
   background(0);
   for (int i = 0; i < susie.length; i++) {
     susie[i].showStars();
   }       
-  for(int x = 0; x < rocks.length;x++){
-    rocks[x].move(); 
-    rocks[x].show(); 
+  for(int r = 0; r < rocksList.size();r++){
+    if(rocksList.get(r).distance(bob) < 20) { 
+    rocksList.remove(r);
+      }
+  }
+
+ for(Asteroid ast : rocksList){
+    ast.move(); 
+    ast.show();
   }
   
   bob.move();
@@ -44,11 +53,11 @@ public void keyPressed() {
   // myDirectionX += ((dAmount) * Math.cos(dRadians));    
   // myDirectionY += ((dAmount) * Math.sin(dRadians)); 
   if (keyCode == UP) {     
-    bob.accelerate(0.9);
+    bob.accelerate(0.7);
   }
 
   if (keyCode == DOWN) {
-    bob.accelerate(-0.9);
+    bob.accelerate(-0.7);
   }
   //hyperspace
   if (key == 'h') {
@@ -135,6 +144,11 @@ public class Asteroid extends Floater {
     rotate(rotationSpeed); 
     super.move(); //calls original move!
   }
+  
+   public float distance(SpaceShip ship){
+    return dist((float)myCenterX, (float)myCenterY, ship.getX(), ship.getY());
+  }
+  
 }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
@@ -208,4 +222,4 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
     }   
     endShape(CLOSE);
   }
-}
+} 
